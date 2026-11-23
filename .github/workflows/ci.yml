@@ -1,28 +1,25 @@
-name: Analyze Vowel Frequency
-on: [push]
+name: CI Workflow
+
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  analyze:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: '3.x'
-
-      - name: Run Vowel Frequency Analyzer
-        id: vowel_freq
+      - name: Build Docker Image
         run: |
-          # run frequency.py script 
-          FREQ_RESULT=$(python3 .github/scripts/frequency.py 'data.txt')
-          echo "FREQ_RESULT=$FREQ_RESULT" >> $GITHUB_ENV
+          docker build -t vowel-frequency-analyzer:latest .
 
-      - name: Update README with Vowel Frequency
+      - name: Run Docker container
         run: |
-          FREQ_RESULT=="${{ env.FREQ_RESULT }}"
-          GITHUB_USER="${{ github.actor }}"
-          bash .github/scripts/update_readme.sh "$FREQ_RESULT" "$GITHUB_USER"
+          docker run --rm \
+            -e GITHUB_USER="${{ github.actor }}" \
+            vowel-frequency-analyzer:latest

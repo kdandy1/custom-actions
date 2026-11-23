@@ -1,5 +1,5 @@
 name: 'Vowel Frequency Analyzer'
-description: 'Anvalyze the frequency of vowels in a given text file'
+description: 'Custom action to analyze vowel frequency in a given file.'
 
 
 inputs:
@@ -9,23 +9,8 @@ inputs:
 
 
 runs:
-  using: 'composite'
-  steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v7
-
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-
-    - name: Run Vowel Frequency Analyzer
-      shell: bash
-      run: |
-        python3 .github/scripts/frequency.py ${{ inputs.file }}
-
-    - name: Update README with Vowel Frequency
-      shell: bash
-      run: |
-        bash .github/scripts/update_readme.sh
+  using: 'docker'
+  image: 'ghcr.io/kdandy1/vowel-frequency-analyzer:latest'
+  entrypoint: ['/bin/bash', '/.github/scripts/entrypoint.sh']
+  env:
+    FILE: ${{ inputs.file }}
