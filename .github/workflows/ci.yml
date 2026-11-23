@@ -24,5 +24,5 @@ jobs:
       - name: Update README with Vowel Frequency
         run: |
           FREQ_RESULT=="${{ env.FREQ_RESULT }}"
-          GITHUB_USER="{{ github.actor }}"
+          GITHUB_USER="${{ github.actor }}"
           bash .github/scripts/update_readme.sh "$FREQ_RESULT" "GITHUB_USER"
